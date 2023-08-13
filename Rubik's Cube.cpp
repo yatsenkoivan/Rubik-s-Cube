@@ -1,4 +1,6 @@
-﻿int main()
+﻿#include "Cube.h"
+
+int main()
 {
     
 }
