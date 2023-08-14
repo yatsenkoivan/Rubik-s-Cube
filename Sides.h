@@ -37,7 +37,7 @@ struct Side
 				}
 			}
 		}
-		RestoreColor();
+		SetColor();
 		//FIX
 		for (int i = 0; i < size * Element::size_y + (size-1)*gap; i++)
 		{

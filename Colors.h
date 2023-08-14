@@ -2,7 +2,7 @@
 #include <windows.h>
 
 enum Colors {
-	white = 15, blue=9, red=12, green=10, orange=13, /*pink instead*/ yellow=14, null = 0
+	white = 7, blue=1, red=4, green=2, orange=5, /*pink instead*/ yellow=6, null = 0
 };
 
 void SetColor(Colors color=null) {

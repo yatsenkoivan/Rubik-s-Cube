@@ -62,8 +62,11 @@ class Cube
 		}
 		void Start()
 		{
-			Show();
-			_getch();
+			while (true)
+			{
+				Show();
+				_getch();
+			}
 		}
 };
 int Cube::sides_gap = 2;
