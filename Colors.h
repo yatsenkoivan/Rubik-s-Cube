@@ -7,7 +7,7 @@ enum Colors {
 
 void SetColor(Colors color=null) {
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(h, color*16 + color);
+	SetConsoleTextAttribute(h, color*16);
 }
 void RestoreColor()
 {

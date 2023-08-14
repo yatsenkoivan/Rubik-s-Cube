@@ -3,12 +3,36 @@
 #include "Cursor.h"
 #include <iostream>
 
+
+struct Side;
+
+
+struct Cursor
+{
+	static int x;
+	static int y;
+	static const char symbol = '#';
+	static const char move_symbol = 'O';
+	static bool move;
+	static Side* side;
+};
+int Cursor::x = 0;
+int Cursor::y = 0;
+Side* Cursor::side = nullptr;
+bool Cursor::move = false;
+
+
 struct Side
 {
 	static int size;
 	static int gap;
 
 	Element*** elements;
+
+	Side* left;
+	Side* up;
+	Side* right;
+	Side* down;
 
 	Side(Colors color) {
 		elements = new Element * *[size];
@@ -20,30 +44,10 @@ struct Side
 				elements[row][col] = new Element(color);
 			}
 		}
-	}
-	void Show(int start_x, int start_y)
-	{
-		for (int row = 0; row < size; row++)
-		{
-			for (int col = 0; col < size; col++)
-			{
-				int x = col * Element::size_x + col * gap;
-				int y = row * Element::size_y + row * gap;
-				SetColor(elements[row][col]->color);
-				for (int i = 0; i < Element::size_y; i++)
-				{
-					Cursor::set(x + start_x, y + start_y + i);
-					for (int j=0; j<Element::size_x; j++) std::cout << '.';
-				}
-			}
-		}
-		SetColor();
-		//FIX
-		for (int i = 0; i < size * Element::size_y + (size-1)*gap; i++)
-		{
-			Cursor::set(start_x + size * Element::size_x + (size - 1) * gap, start_y + i);
-			std::cout << '.';
-		}
+		left = nullptr;
+		up = nullptr;
+		right = nullptr;
+		down = nullptr;
 	}
 	~Side()
 	{
@@ -56,6 +60,38 @@ struct Side
 			delete[] elements[row];
 		}
 		delete[] elements;
+	}
+	void Show(int start_x, int start_y)
+	{
+		for (int row = 0; row < size; row++)
+		{
+			for (int col = 0; col < size; col++)
+			{
+				int x = col * Element::size_x + col * gap;
+				int y = row * Element::size_y + row * gap;
+				SetColor(elements[row][col]->color);
+				for (int i = 0; i < Element::size_y; i++)
+				{
+					SetCursor(x + start_x, y + start_y + i);
+					for (int j = 0; j < Element::size_x; j++)
+					{
+						if (this == Cursor::side && row == Cursor::y && col == Cursor::x)
+						{
+							if (Cursor::move) std::cout << Cursor::move_symbol;
+							else std::cout << Cursor::symbol;
+						}
+						else std::cout << ' ';
+					}
+				}
+			}
+		}
+		SetColor();
+		//FIX
+		for (int i = 0; i < size * Element::size_y + (size - 1) * gap; i++)
+		{
+			SetCursor(start_x + size * Element::size_x + (size - 1) * gap, start_y + i);
+			std::cout << '.';
+		}
 	}
 };
 int Side::size = 3;
