@@ -2,5 +2,6 @@
 
 int main()
 {
-    
+    Cube c;
+    c.Start();
 }
