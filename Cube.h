@@ -2,6 +2,10 @@
 #include "Sides.h"
 #include <conio.h>
 
+enum Directions
+{
+	left, up, right, down
+};
 
 class Cube
 {
@@ -36,14 +40,14 @@ class Cube
 			sides[1]->down = sides[3];
 
 			sides[2]->left = sides[0];
-			sides[2]->up = sides[3];
+			sides[2]->up = sides[5];
 			sides[2]->right = sides[4];
 			sides[2]->down = sides[1];
 
 			sides[3]->left = sides[0];
 			sides[3]->up = sides[1];
 			sides[3]->right = sides[4];
-			sides[3]->down = sides[2];
+			sides[3]->down = sides[5];
 
 			sides[4]->left = sides[1];
 			sides[4]->up = sides[2];
@@ -51,9 +55,9 @@ class Cube
 			sides[4]->down = sides[3];
 
 			sides[5]->left = sides[4];
-			sides[5]->up = sides[2];
+			sides[5]->up = sides[3];
 			sides[5]->right = sides[0];
-			sides[5]->down = sides[3];
+			sides[5]->down = sides[2];
 
 
 			Cursor::side = sides[1];
@@ -100,12 +104,89 @@ class Cube
 						   y);
 
 		}
+		void Move(Directions direction)
+		{
+			Side* first = Cursor::side;
+			Side* current = Cursor::side;
+
+			Element** temp = new Element * [Side::size];
+			for (int i = 0; i < Side::size; i++)
+			{
+				switch (direction)
+				{
+					case Directions::left:
+					case Directions::right:
+						temp[i] = first->elements[Cursor::y][i];
+						break;
+					case Directions::up:
+					case Directions::down:
+						temp[i] = first->elements[i][Cursor::x];
+						break;
+				}
+			}
+
+			do
+			{
+				switch (direction)
+				{
+					case Directions::left:
+						for (int i = 0; i < Side::size; i++)
+						{
+							if (current->right == first)
+								current->elements[Cursor::y][i] = temp[i];
+							else
+								current->elements[Cursor::y][i] = current->right->elements[Cursor::y][i];
+						}
+						current = current->right;
+						break;
+					case Directions::up:
+						for (int i = 0; i < Side::size; i++)
+						{
+							if (current->down == first)
+								current->elements[i][Cursor::x] = temp[i];
+							else
+								current->elements[i][Cursor::x] = current->down->elements[i][Cursor::x];
+						}
+						current = current->down;
+						break;
+					case Directions::right:
+						for (int i = 0; i < Side::size; i++)
+						{
+							if (current->left == first)
+								current->elements[Cursor::y][i] = temp[i];
+							else
+								current->elements[Cursor::y][i] = current->left->elements[Cursor::y][i];
+						}
+						current = current->left;
+						break;
+					case Directions::down:
+						for (int i = 0; i < Side::size; i++)
+						{
+							if (current->up == first)
+								current->elements[i][Cursor::x] = temp[i];
+							else
+								current->elements[i][Cursor::x] = current->up->elements[i][Cursor::x];
+						}
+						current = current->up;
+						break;
+				}
+			} while (current != first);
+			delete[] temp;
+		}
 		void Press(char key)
 		{
 			switch (key)
 			{
 				case 'a':
 				case 'A':
+					//move to left
+					if (Cursor::move)
+					{
+						if (Cursor::y == 0) Cursor::side->up->Rotate();
+						if (Cursor::y == Side::size - 1) Cursor::side->down->Rotate(false);
+						Move(Directions::left);
+						break;
+					}
 					if (Cursor::x - 1 >= 0) Cursor::x--;
 					else
 					{
@@ -115,6 +196,14 @@ class Cube
 					break;
 				case 'w':
 				case 'W':
+					//move to up
+					if (Cursor::move)
+					{
+						if (Cursor::x == 0) Cursor::side->left->Rotate(false);
+						if (Cursor::x == Side::size-1) Cursor::side->right->Rotate();
+						Move(Directions::up);
+						break;
+					}
 					if (Cursor::y - 1 >= 0) Cursor::y--;
 					else
 					{
@@ -124,6 +213,14 @@ class Cube
 					break;
 				case 'd':
 				case 'D':
+					//move to right
+					if (Cursor::move)
+					{
+						if (Cursor::y == 0) Cursor::side->up->Rotate(false);
+						if (Cursor::y == Side::size - 1) Cursor::side->down->Rotate();
+						Move(Directions::right);
+						break;
+					}
 					if (Cursor::x + 1 < Side::size) Cursor::x++;
 					else
 					{
@@ -133,6 +230,14 @@ class Cube
 					break;
 				case 's':
 				case 'S':
+					//move to down
+					if (Cursor::move)
+					{
+						if (Cursor::x == 0) Cursor::side->left->Rotate();
+						if (Cursor::x == Side::size - 1) Cursor::side->right->Rotate(false);
+						Move(Directions::down);
+						break;
+					}
 					if (Cursor::y + 1 < Side::size) Cursor::y++;
 					else
 					{

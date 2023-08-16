@@ -93,6 +93,43 @@ struct Side
 			std::cout << '.';
 		}
 	}
+	void Rotate(bool clockwise = true)
+	{
+		Element*** temp = new Element ** [Side::size];
+		for (int row = 0; row < Side::size; row++)
+		{
+			temp[row] = new Element * [Side::size];
+			for (int col = 0; col < Side::size; col++)
+			{
+				temp[row][col] = elements[row][col];
+			}
+		}
+		for (int row = 0; row < size; row++)
+		{
+			for (int col = 0; col < size; col++)
+			{
+
+				if (clockwise)
+				{
+					temp[row][col] = elements[size - col - 1][row];
+				}
+				else
+				{
+					temp[row][col] = elements[col][size - row - 1];
+				}
+
+			}
+		}
+		for (int row = 0; row < Side::size; row++)
+		{
+			for (int col = 0; col < Side::size; col++)
+			{
+				elements[row][col] = temp[row][col];
+			}
+			delete[] temp[row];
+		}
+		delete[] temp;
+	}
 };
-int Side::size = 3;
+int Side::size = 4;
 int Side::gap = 1;
