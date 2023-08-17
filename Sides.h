@@ -93,6 +93,16 @@ struct Side
 			std::cout << '.';
 		}
 	}
+	void horizontal_reverse()
+	{
+		for (int row = 0; row < size; row++)
+		{
+			for (int col = 0; col < size/2; col++)
+			{
+				std::swap(elements[row][col], elements[row][size - col - 1]);
+			}
+		}
+	}
 	void Rotate(bool clockwise = true)
 	{
 		Element*** temp = new Element ** [Side::size];
@@ -131,5 +141,5 @@ struct Side
 		delete[] temp;
 	}
 };
-int Side::size = 4;
+int Side::size = 3;
 int Side::gap = 1;

@@ -106,72 +106,45 @@ class Cube
 		}
 		void Move(Directions direction)
 		{
-			Side* first = Cursor::side;
-			Side* current = Cursor::side;
+			//yellow side fix
+			sides[5]->horizontal_reverse();
+			if (Cursor::side == sides[5])
+				Cursor::x = Side::size - Cursor::x - 1;
 
-			Element** temp = new Element * [Side::size];
-			for (int i = 0; i < Side::size; i++)
+			Element*** temp = new Element * *[Side::size];
+			for (int row = 0; row < Side::size; row++)
 			{
-				switch (direction)
+				temp[row] = new Element * [Side::size];
+				for (int col = 0; col < Side::size; col++)
 				{
-					case Directions::left:
-					case Directions::right:
-						temp[i] = first->elements[Cursor::y][i];
-						break;
-					case Directions::up:
-					case Directions::down:
-						temp[i] = first->elements[i][Cursor::x];
-						break;
+					temp[row][col] = Cursor::side->elements[row][col];
 				}
 			}
-
-			do
+			Side* first = Cursor::side;
+			Side* current = first;
+			if (Cursor::side == sides[1] || Cursor::side == sides[2] || Cursor::side == sides[3] || Cursor::side == sides[5])
 			{
-				switch (direction)
+				for (int _side = 0; _side < 4; _side++)
 				{
-					case Directions::left:
-						for (int i = 0; i < Side::size; i++)
+					for (int i = 0; i < Side::size; i++)
+					{
+						if (direction == Directions::up)
 						{
-							if (current->right == first)
-								current->elements[Cursor::y][i] = temp[i];
-							else
-								current->elements[Cursor::y][i] = current->right->elements[Cursor::y][i];
-						}
-						current = current->right;
-						break;
-					case Directions::up:
-						for (int i = 0; i < Side::size; i++)
-						{
-							if (current->down == first)
-								current->elements[i][Cursor::x] = temp[i];
+							if (current == first->up)
+								current->elements[i][Cursor::x] = temp[i][Cursor::x];
 							else
 								current->elements[i][Cursor::x] = current->down->elements[i][Cursor::x];
 						}
+					}
+					if (direction == Directions::up)
 						current = current->down;
-						break;
-					case Directions::right:
-						for (int i = 0; i < Side::size; i++)
-						{
-							if (current->left == first)
-								current->elements[Cursor::y][i] = temp[i];
-							else
-								current->elements[Cursor::y][i] = current->left->elements[Cursor::y][i];
-						}
-						current = current->left;
-						break;
-					case Directions::down:
-						for (int i = 0; i < Side::size; i++)
-						{
-							if (current->up == first)
-								current->elements[i][Cursor::x] = temp[i];
-							else
-								current->elements[i][Cursor::x] = current->up->elements[i][Cursor::x];
-						}
-						current = current->up;
-						break;
 				}
-			} while (current != first);
-			delete[] temp;
+			}
+
+			//yellow side fix
+			sides[5]->horizontal_reverse();
+			if (Cursor::side == sides[5])
+				Cursor::x = Side::size - Cursor::x - 1;
 		}
 		void Press(char key)
 		{
