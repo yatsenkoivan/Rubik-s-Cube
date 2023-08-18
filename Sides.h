@@ -103,6 +103,16 @@ struct Side
 			}
 		}
 	}
+	void vertical_reverse()
+	{
+		for (int row = 0; row < size/2; row++)
+		{
+			for (int col = 0; col < size; col++)
+			{
+				std::swap(elements[row][col], elements[size - row - 1][col]);
+			}
+		}
+	}
 	void Rotate(bool clockwise = true)
 	{
 		Element*** temp = new Element ** [Side::size];
