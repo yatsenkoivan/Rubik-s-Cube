@@ -16,10 +16,15 @@ class Cube
 		static int offset_y;
 
 		Side** sides;
+		time_t start_time;
+		unsigned int moves_amount;
 
 	public:
 		Cube()
 		{
+			moves_amount = 0;
+			start_time = 0;
+
 			sides = new Side * [6];
 			sides[0] = new Side(Colors::blue);
 			sides[1] = new Side(Colors::white);
@@ -82,13 +87,21 @@ class Cube
 			int y = Cursor::y;
 			Side* side = Cursor::side;
 			Directions direction;
-			for (int move = 0; move < 25; move++)
+			bool repeat;
+			
+			int moves;
+			if (Side::size == 2) moves = 10;
+			else moves = 20 * (Side::size - 2);
+
+			for (int move = 0; move < moves; move++)
 			{
 				Cursor::side = sides[rand() % 5];
 				Cursor::x = rand() % Side::size;
 				Cursor::y = rand() % Side::size;
 				direction = Directions(rand() % 4);
+				repeat = rand() % 2;
 				Move(direction);
+				if (repeat) Move(direction);
 			}
 			Cursor::side = side;
 			Cursor::x = x;
@@ -164,6 +177,9 @@ class Cube
 		}
 		void Move(Directions direction)
 		{
+			moves_amount++;
+			if (start_time == 0) start_time = clock();
+
 			//yellow side fix
 			if (direction == Directions::up || direction == Directions::down)
 			{
@@ -487,15 +503,47 @@ class Cube
 					break;
 			}
 		}
+		bool Solved()
+		{
+			Colors element_color;
+			for (int _side = 0; _side < 6; _side++)
+			{
+				element_color = sides[_side]->elements[0][0]->color;
+				for (int row = 0; row < Side::size; row++)
+				{
+					for (int col = 0; col < Side::size; col++)
+					{
+						//not solved
+						if (sides[_side]->elements[row][col]->color != element_color) return false;
+					}
+				}
+			}
+			return true;
+		}
+		//time in ms
+		void ShowResults(unsigned int moves_amount, time_t time)
+		{
+			RestoreColor();
+			SetCursor(0, 0);
+			std::cout << "Solved!\tTime: " << time / 1000.0 << " | " << "Moves: " << moves_amount;
+			int side_size = (Side::size * Element::size_y) + Side::size - 1;
+			SetCursor(0, offset_y + side_size * 3 + 2 * sides_gap);
+			system("pause");
+		}
 		void Start()
 		{
+			start_time = 0;
+			moves_amount = 0;
+
 			char key;
-			while (true)
+			while (!Solved())
 			{
 				Show();
 				key = _getch();
 				Press(key);
 			}
+			Show();
+			ShowResults(moves_amount, clock() - start_time);
 		}
 };
 int Cube::sides_gap = 2;
