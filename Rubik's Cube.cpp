@@ -3,5 +3,6 @@
 int main()
 {
     Cube c;
+    c.Scramble();
     c.Start();
 }

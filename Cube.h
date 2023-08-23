@@ -1,6 +1,7 @@
 #pragma once
 #include "Sides.h"
 #include <conio.h>
+#include <ctime>
 
 enum Directions
 {
@@ -74,6 +75,25 @@ class Cube
 			}
 			delete[] sides;
 		}
+		void Scramble()
+		{
+			srand(time(0));
+			int x = Cursor::x;
+			int y = Cursor::y;
+			Side* side = Cursor::side;
+			Directions direction;
+			for (int move = 0; move < 25; move++)
+			{
+				Cursor::side = sides[rand() % 5];
+				Cursor::x = rand() % Side::size;
+				Cursor::y = rand() % Side::size;
+				direction = Directions(rand() % 4);
+				Move(direction);
+			}
+			Cursor::side = side;
+			Cursor::x = x;
+			Cursor::y = y;
+		}
 		void Show()
 		{
 			int x = offset_x;
@@ -104,6 +124,44 @@ class Cube
 						   y);
 
 		}
+		void Rotate(Directions direction)
+		{
+			switch (direction)
+			{
+				case Directions::left:
+					if (Cursor::y == 0)
+					{
+						if (Cursor::side == sides[5]) Cursor::side->down->Rotate();
+						else Cursor::side->up->Rotate();
+					}
+					if (Cursor::y == Side::size - 1)
+					{
+						if (Cursor::side == sides[5]) Cursor::side->up->Rotate(false);
+						else Cursor::side->down->Rotate(false);
+					}
+					break;
+				case Directions::up:
+					if (Cursor::x == 0) Cursor::side->left->Rotate(false);
+					if (Cursor::x == Side::size - 1) Cursor::side->right->Rotate();
+					break;
+				case Directions::right:
+					if (Cursor::y == 0)
+					{
+						if (Cursor::side == sides[5]) Cursor::side->down->Rotate(false);
+						else Cursor::side->up->Rotate(false);
+					}
+					if (Cursor::y == Side::size - 1)
+					{
+						if (Cursor::side == sides[5]) Cursor::side->up->Rotate();
+						else Cursor::side->down->Rotate();
+					}
+					break;
+				case Directions::down:
+					if (Cursor::x == 0) Cursor::side->left->Rotate();
+					if (Cursor::x == Side::size - 1) Cursor::side->right->Rotate(false);
+					break;
+			}
+		}
 		void Move(Directions direction)
 		{
 			//yellow side fix
@@ -113,7 +171,25 @@ class Cube
 				sides[5]->vertical_reverse();
 			}
 			if (Cursor::side == sides[5])
+			{
 				Cursor::x = Side::size - Cursor::x - 1;
+
+				//yellow -> red -> white
+				sides[2]->down = sides[5];
+				sides[2]->up = sides[1];
+
+				//red -> white -> orange
+				sides[1]->down = sides[2];
+				sides[1]->up = sides[3];
+
+				//white -> orange -> yellow
+				sides[3]->down = sides[1];
+				sides[3]->up = sides[5];
+
+				//orange -> yellow -> red
+				sides[5]->down = sides[3];
+				sides[5]->up = sides[2];
+			}
 
 
 			//vertical fix (green & blue)
@@ -246,7 +322,25 @@ class Cube
 				sides[5]->vertical_reverse();
 			}
 			if (Cursor::side == sides[5])
+			{
 				Cursor::x = Side::size - Cursor::x - 1;
+
+				//white -> red -> yellow
+				sides[2]->down = sides[1];
+				sides[2]->up = sides[5];
+
+				//red -> yellow -> orange
+				sides[5]->down = sides[2];
+				sides[5]->up = sides[3];
+
+				//yellow -> orange -> white
+				sides[3]->down = sides[5];
+				sides[3]->up = sides[1];
+
+				//orange -> white -> red
+				sides[1]->down = sides[3];
+				sides[1]->up = sides[2];
+			}
 
 			//vertical fix (green & blue)
 			if ((Cursor::side == sides[0] || Cursor::side == sides[4])
@@ -313,6 +407,10 @@ class Cube
 				}
 			}
 
+
+			//ROTATES
+			Rotate(direction);
+
 		}
 		void Press(char key)
 		{
@@ -323,8 +421,6 @@ class Cube
 					//move to left
 					if (Cursor::move)
 					{
-						if (Cursor::y == 0) Cursor::side->up->Rotate();
-						if (Cursor::y == Side::size - 1) Cursor::side->down->Rotate(false);
 						Move(Directions::left);
 						break;
 					}
@@ -340,8 +436,6 @@ class Cube
 					//move to up
 					if (Cursor::move)
 					{
-						if (Cursor::x == 0) Cursor::side->left->Rotate(false);
-						if (Cursor::x == Side::size-1) Cursor::side->right->Rotate();
 						Move(Directions::up);
 						break;
 					}
@@ -357,8 +451,6 @@ class Cube
 					//move to right
 					if (Cursor::move)
 					{
-						if (Cursor::y == 0) Cursor::side->up->Rotate(false);
-						if (Cursor::y == Side::size - 1) Cursor::side->down->Rotate();
 						Move(Directions::right);
 						break;
 					}
@@ -374,8 +466,6 @@ class Cube
 					//move to down
 					if (Cursor::move)
 					{
-						if (Cursor::x == 0) Cursor::side->left->Rotate();
-						if (Cursor::x == Side::size - 1) Cursor::side->right->Rotate(false);
 						Move(Directions::down);
 						break;
 					}
