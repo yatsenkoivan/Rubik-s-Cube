@@ -500,6 +500,7 @@ class Cube
 				case 'r':
 				case 'R':
 					system("cls");
+					ShowControls();
 					break;
 			}
 		}
@@ -525,13 +526,32 @@ class Cube
 		{
 			RestoreColor();
 			SetCursor(0, 0);
-			std::cout << "Solved!\tTime: " << time / 1000.0 << " | " << "Moves: " << moves_amount;
-			int side_size = (Side::size * Element::size_y) + Side::size - 1;
+			std::cout << "Solved!\tTime: " << time / 1000.0 << " s | " << "Moves: " << moves_amount;
+			int side_size = (Side::size * Element::size_y) + (Side::size - 1)*Side::gap;
 			SetCursor(0, offset_y + side_size * 3 + 2 * sides_gap);
 			system("pause");
 		}
+		void ShowControls()
+		{
+			RestoreColor();
+			int side_size = (Side::size * Element::size_x) + (Side::size - 1)*Side::gap;
+			int x = offset_x + side_size * 2 + 2 * sides_gap;
+			int y = offset_y + 2;
+			SetCursor(x, y);
+			std::cout << "WASD - cursor moving";
+			SetCursor(x, y+1);
+			std::cout << "X - to change cursor mode";
+			SetCursor(x, y+2);
+			std::cout << " (# - choose)";
+			SetCursor(x, y + 3);
+			std::cout << " (O - move)";
+			SetCursor(x, y + 4);
+			std::cout << "R - reshow";
+			SetColor();
+		}
 		void Start()
 		{
+			ShowControls();
 			start_time = 0;
 			moves_amount = 0;
 

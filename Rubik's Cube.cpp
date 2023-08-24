@@ -22,6 +22,11 @@ int main()
         Element::size_x = 3;
         Element::size_y = 2;
     }
+    if (Side::size >= 8)
+    {
+        Element::size_x = 2;
+        Element::size_y = 1;
+    }
     system("cls");
     Cube c;
     c.Scramble();
