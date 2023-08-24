@@ -430,94 +430,144 @@ class Cube
 		}
 		void Press(char key)
 		{
+			int x;
+			int y;
+			Side* side;
+
 			switch (key)
 			{
-				case 'ô':
-				case 'Ô':
-				case 'a':
-				case 'A':
-					//move to left
-					if (Cursor::move)
-					{
-						Move(Directions::left);
-						break;
-					}
-					if (Cursor::x - 1 >= 0) Cursor::x--;
-					else
-					{
-						//horizontal sides
-						if (Cursor::side == sides[1] || Cursor::side == sides[4] || Cursor::side == sides[5])
-						{
-							Cursor::side = Cursor::side->left;
-							Cursor::x = Side::size - 1;
-						}
-					}
+				//LEFT
+			case 'ô':
+			case 'Ô':
+			case 'a':
+			case 'A':
+				//move to left
+				if (Cursor::move)
+				{
+					Move(Directions::left);
 					break;
-				case 'ö':
-				case 'Ö':
-				case 'w':
-				case 'W':
-					//move to up
-					if (Cursor::move)
+				}
+				if (Cursor::x - 1 >= 0) Cursor::x--;
+				else
+				{
+					//horizontal sides
+					if (Cursor::side == sides[1] || Cursor::side == sides[4] || Cursor::side == sides[5])
 					{
+						Cursor::side = Cursor::side->left;
+						Cursor::x = Side::size - 1;
+					}
+				}
+				break;
+				//UP
+			case 'ö':
+			case 'Ö':
+			case 'w':
+			case 'W':
+				//move to up
+				if (Cursor::move)
+				{
+					Move(Directions::up);
+					break;
+				}
+				if (Cursor::y - 1 >= 0) Cursor::y--;
+				else
+				{
+					//vertical sides
+					if (Cursor::side == sides[3] || Cursor::side == sides[1])
+					{
+						Cursor::side = Cursor::side->up;
+						Cursor::y = Side::size - 1;
+					}
+				}
+				break;
+				//RIGHT
+			case 'â':
+			case 'Â':
+			case 'd':
+			case 'D':
+				//move to right
+				if (Cursor::move)
+				{
+					Move(Directions::right);
+					break;
+				}
+				if (Cursor::x + 1 < Side::size) Cursor::x++;
+				else
+				{
+					//horizontal sides
+					if (Cursor::side == sides[0] || Cursor::side == sides[1] || Cursor::side == sides[4])
+					{
+						Cursor::side = Cursor::side->right;
+						Cursor::x = 0;
+					}
+				}
+				break;
+				//DOWN
+			case '³':
+			case '²':
+			case 'û':
+			case 'Û':
+			case 's':
+			case 'S':
+				//move to down
+				if (Cursor::move)
+				{
+					Move(Directions::down);
+					break;
+				}
+				if (Cursor::y + 1 < Side::size) Cursor::y++;
+				else
+				{
+					//vertical sides
+					if (Cursor::side == sides[2] || Cursor::side == sides[1])
+					{
+						Cursor::side = Cursor::side->down;
+						Cursor::y = 0;
+					}
+				}
+				break;
+				//ROTATE
+					//left
+			case 'é':
+			case 'É':
+			case 'q':
+			case 'Q':
+				//right
+			case 'ó':
+			case 'Ó':
+			case 'e':
+			case 'E':
+
+				if (Cursor::move == false) break;
+
+				x = Cursor::x;
+				y = Cursor::y;
+				side = Cursor::side;
+				Cursor::x = 0;
+				if (Cursor::side == sides[2]) Cursor::y = 0;
+				if (Cursor::side == sides[3]) Cursor::y = Side::size - 1;
+				Cursor::side = Cursor::side->right;
+				//ROTATE LEFT
+				if (key == 'q' || key == 'Q' || key == 'é' || key == 'É')
+				{
+					if (side == sides[2]) Move(Directions::right);
+					else if (side == sides[3]) Move(Directions::left);
+					else
 						Move(Directions::up);
-						break;
-					}
-					if (Cursor::y - 1 >= 0) Cursor::y--;
+				}
+				if (key == 'e' || key == 'E' || key == 'ó' || key == 'Ó')
+				{
+					if (side == sides[2]) Move(Directions::left);
+					else if (side == sides[3]) Move(Directions::right);
 					else
-					{
-						//vertical sides
-						if (Cursor::side == sides[3] || Cursor::side == sides[1])
-						{
-							Cursor::side = Cursor::side->up;
-							Cursor::y = Side::size - 1;
-						}
-					}
-					break;
-				case 'â':
-				case 'Â':
-				case 'd':
-				case 'D':
-					//move to right
-					if (Cursor::move)
-					{
-						Move(Directions::right);
-						break;
-					}
-					if (Cursor::x + 1 < Side::size) Cursor::x++;
-					else
-					{
-						//horizontal sides
-						if (Cursor::side == sides[0] || Cursor::side == sides[1] || Cursor::side == sides[4])
-						{
-							Cursor::side = Cursor::side->right;
-							Cursor::x = 0;
-						}
-					}
-					break;
-				case '³':
-				case '²':
-				case 'û':
-				case 'Û':
-				case 's':
-				case 'S':
-					//move to down
-					if (Cursor::move)
-					{
 						Move(Directions::down);
-						break;
-					}
-					if (Cursor::y + 1 < Side::size) Cursor::y++;
-					else
-					{
-						//vertical sides
-						if (Cursor::side == sides[2] || Cursor::side == sides[1])
-						{
-							Cursor::side = Cursor::side->down;
-							Cursor::y = 0;
-						}
-					}
+				}
+					Cursor::x = x;
+					Cursor::y = y;
+					Cursor::side = side;
 					break;
+
+				//CHANGE CURSOR MODE
 				case '÷':
 				case '×':
 				case 'x':
@@ -525,6 +575,7 @@ class Cube
 					if (Cursor::move) Cursor::move = false;
 					else Cursor::move = true;
 					break;
+				//RESHOW
 				case 'ê':
 				case 'Ê':
 				case 'r':
@@ -566,16 +617,18 @@ class Cube
 			RestoreColor();
 			int side_size = (Side::size * Element::size_x) + (Side::size - 1)*Side::gap;
 			int x = offset_x + side_size * 2 + 2 * sides_gap;
-			int y = offset_y + 2;
+			int y = offset_y;
 			SetCursor(x, y);
 			std::cout << "WASD - cursor moving";
 			SetCursor(x, y+1);
-			std::cout << "X - to change cursor mode";
+			std::cout << "QE - to rotate current side";
 			SetCursor(x, y+2);
+			std::cout << "X - to change cursor mode";
+			SetCursor(x, y+3);
 			std::cout << " (# - choose)";
-			SetCursor(x, y + 3);
+			SetCursor(x, y+4);
 			std::cout << " (O - move)";
-			SetCursor(x, y + 4);
+			SetCursor(x, y+5);
 			std::cout << "R - reshow";
 			SetColor();
 		}
@@ -586,7 +639,7 @@ class Cube
 			moves_amount = 0;
 
 			char key;
-			while (!Solved())
+			while (!Solved() || true)
 			{
 				Show();
 				key = _getch();
