@@ -2,6 +2,7 @@
 
 int main()
 {
+    SetConsoleCP(1251);
     std::string input;
     int size=0;
     while (true)

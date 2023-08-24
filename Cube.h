@@ -432,6 +432,8 @@ class Cube
 		{
 			switch (key)
 			{
+				case 'ô':
+				case 'Ô':
 				case 'a':
 				case 'A':
 					//move to left
@@ -451,6 +453,8 @@ class Cube
 						}
 					}
 					break;
+				case 'ö':
+				case 'Ö':
 				case 'w':
 				case 'W':
 					//move to up
@@ -470,6 +474,8 @@ class Cube
 						}
 					}
 					break;
+				case 'â':
+				case 'Â':
 				case 'd':
 				case 'D':
 					//move to right
@@ -489,6 +495,10 @@ class Cube
 						}
 					}
 					break;
+				case '³':
+				case '²':
+				case 'û':
+				case 'Û':
 				case 's':
 				case 'S':
 					//move to down
@@ -508,11 +518,15 @@ class Cube
 						}
 					}
 					break;
+				case '÷':
+				case '×':
 				case 'x':
 				case 'X':
 					if (Cursor::move) Cursor::move = false;
 					else Cursor::move = true;
 					break;
+				case 'ê':
+				case 'Ê':
 				case 'r':
 				case 'R':
 					system("cls");
