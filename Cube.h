@@ -443,8 +443,12 @@ class Cube
 					if (Cursor::x - 1 >= 0) Cursor::x--;
 					else
 					{
-						Cursor::side = Cursor::side->left;
-						Cursor::x = Side::size-1;
+						//horizontal sides
+						if (Cursor::side == sides[1] || Cursor::side == sides[4] || Cursor::side == sides[5])
+						{
+							Cursor::side = Cursor::side->left;
+							Cursor::x = Side::size - 1;
+						}
 					}
 					break;
 				case 'w':
@@ -458,8 +462,12 @@ class Cube
 					if (Cursor::y - 1 >= 0) Cursor::y--;
 					else
 					{
-						Cursor::side = Cursor::side->up;
-						Cursor::y = Side::size-1;
+						//vertical sides
+						if (Cursor::side == sides[3] || Cursor::side == sides[1])
+						{
+							Cursor::side = Cursor::side->up;
+							Cursor::y = Side::size - 1;
+						}
 					}
 					break;
 				case 'd':
@@ -473,8 +481,12 @@ class Cube
 					if (Cursor::x + 1 < Side::size) Cursor::x++;
 					else
 					{
-						Cursor::side = Cursor::side->right;
-						Cursor::x = 0;
+						//horizontal sides
+						if (Cursor::side == sides[0] || Cursor::side == sides[1] || Cursor::side == sides[4])
+						{
+							Cursor::side = Cursor::side->right;
+							Cursor::x = 0;
+						}
 					}
 					break;
 				case 's':
@@ -488,8 +500,12 @@ class Cube
 					if (Cursor::y + 1 < Side::size) Cursor::y++;
 					else
 					{
-						Cursor::side = Cursor::side->down;
-						Cursor::y = 0;
+						//vertical sides
+						if (Cursor::side == sides[2] || Cursor::side == sides[1])
+						{
+							Cursor::side = Cursor::side->down;
+							Cursor::y = 0;
+						}
 					}
 					break;
 				case 'x':
