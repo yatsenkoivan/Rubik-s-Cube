@@ -639,7 +639,7 @@ class Cube
 			moves_amount = 0;
 
 			char key;
-			while (!Solved() || true)
+			while (!Solved())
 			{
 				Show();
 				key = _getch();
